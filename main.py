@@ -1,4 +1,6 @@
 import os
+import csv
+from pathlib import Path
 class GameInventory:
     def __init__(self, dictionary):
         self.__dictionary = dictionary
@@ -41,14 +43,29 @@ class GameInventory:
                     if self.__dictionary[key_remove_items] <= 0:
                         self.__dictionary.pop(key_remove_items)
 
+    def __add(self, item):
+        if item in self.__dictionary.keys():
+            self.__dictionary[item] += 1
+        else:
+            self.__dictionary[item] = 1
+            
+    def import_inventory(self, filename="import_inventory.csv"):
+        path = Path(__file__).parent
+        with open(f'{path}\\{filename}') as csv_file:
+            csv_reader = csv.reader(csv_file)
+            for row in csv_reader:
+                for item in row:
+                    self.__add(item)
+
+
 dictionary = {
     "gold coin": 45,
     "arrow": 12,
     "torch": 6
 }
-dic = {}
 
 game_inventory = GameInventory(dictionary)
+game_inventory.import_inventory("file.csv")
 game_inventory.display_inventory()
 game_inventory.add__to_inventory({"mana potion": 100})
 game_inventory.display_inventory()
